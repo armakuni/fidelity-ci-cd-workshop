@@ -1,0 +1,29 @@
+resources: 
+- name: repo
+  type: git
+  source:
+    uri: https://github.com/armakuni/fidelity-concourse-demo
+
+jobs:
+- name: test
+  plan:
+  - get: repo
+    trigger: true
+  - task: unit-test
+    config:
+      platform: linux
+      image_resource:
+      - name: alpine
+        tag: latest
+      inputs:
+      - name: repo
+      run:
+        path: poetry run pytest
+        dir: repo
+
+- name: deploy
+  plan:
+  - get: repo
+    trigger: true
+    depends_on:
+    - test
