@@ -1,0 +1,110 @@
+#! /bin/bash -eux
+
+EXTERNAL_URL_HOST_NAME="${external_host_name}"
+ADMIN_USERNAME="${admin_username}"
+ADMIN_PASSWORD="${admin_password}"
+TLS_CERT="${tls_cert}"
+TLS_KEY="${tls_key}"
+
+yum update -y
+
+wget https://download.postgresql.org/pub/repos/yum/14/redhat/rhel-7.12-x86_64/postgresql14-libs-14.2-1PGDG.rhel7.x86_64.rpm -o /root/postgresql14-libs-14.2-1PGDG.rhel7.x86_64.rpm
+wget https://download.postgresql.org/pub/repos/yum/14/redhat/rhel-7.12-x86_64/postgresql14-14.2-1PGDG.rhel7.x86_64.rpm -o /root/postgresql14-14.2-1PGDG.rhel7.x86_64.rpm
+wget https://download.postgresql.org/pub/repos/yum/14/redhat/rhel-7.12-x86_64/postgresql14-server-14.2-1PGDG.rhel7.x86_64.rpm -o /root/postgresql14-server-14.2-1PGDG.rhel7.x86_64.rpm
+wget https://github.com/concourse/concourse/releases/download/v7.7.1/concourse-7.7.1-linux-amd64.tgz -o /root/concourse-7.7.1-linux-amd64.tgz
+
+yum localinstall -y /root/postgresql14-libs-14.2-1PGDG.rhel7.x86_64.rpm
+yum localinstall -y /root/postgresql14-14.2-1PGDG.rhel7.x86_64.rpm
+yum localinstall -y /root/postgresql14-server-14.2-1PGDG.rhel7.x86_64.rpm
+
+postgresql-14-setup initdb
+systemctl start postgresql-14
+systemctl enable postgresql-14
+
+su postgres -c "createuser concourse"
+su postgres -c "createdb --owner=concourse atc"
+
+tar -zxf /root/concourse*.tgz -C /usr/local
+
+groupadd -f concourse
+adduser --system -g concourse concourse || true
+
+mkdir -p /home/concourse
+ssh-keygen -t rsa -b 4096 -m PEM -f /home/concourse/host_key -N ''
+ssh-keygen -t rsa -b 4096 -m PEM -f /home/concourse/session_signing_key -N ''
+ssh-keygen -t rsa -b 4096 -m PEM -f /home/concourse/worker_key -N ''
+cp /home/concourse/worker_key.pub /home/concourse/authorized_worker_keys
+
+
+# TODO: Add tls cert and key
+# echo "$TLS_CERT" > /home/concourse/tls.crt
+# echo "$TLS_KEY" > /home/concourse/tls.key
+openssl req -newkey rsa:2048 -passout pass:somepassword -subj "/C=GB/ST=London/L=London/O=AK/OU=AKCCI/CN=$${EXTERNAL_URL_HOST_NAME}/emailAddress=run-concourse@armakuni.com" -nodes -keyout /home/concourse/tls.key -x509 -days 365 -out /home/concourse/tls.crt
+
+ls /home/concourse/ | awk '{ print "chgrp concourse /home/concourse/"$1 }' | sh
+chown concourse:concourse /home/concourse
+ls /home/concourse/ | awk '{ print "chown concourse:concourse /home/concourse/"$1 }' | sh
+ls /home/concourse/ | awk '{ print "chmod g+r /home/concourse/"$1 }' | sh
+setcap cap_net_bind_service=+ep /usr/local/concourse/bin/concourse # allow concourse to bind to privileged port 443
+
+# Look up Secrets Manager region
+TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 60"`
+secret_manager_region=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/placement/region)
+
+cat >concourse_web.service <<-EOF
+        [Unit]
+        Description=Concourse CI Web
+        After=postgres.service
+
+        [Service]
+        ExecStart=/usr/local/concourse/bin/concourse web \
+               --add-local-user "$ADMIN_USERNAME:$ADMIN_PASSWORD" \
+               --aws-secretsmanager-region $${secret_manager_region} \
+               --external-url "https://$EXTERNAL_URL_HOST_NAME:443" \
+               --main-team-local-user $ADMIN_USERNAME \
+               --postgres-socket '/var/run/postgresql' \
+               --session-signing-key /home/concourse/session_signing_key \
+               --tls-bind-port 443 \
+               --tls-cert=/home/concourse/tls.crt \
+               --tls-key=/home/concourse/tls.key \
+               --tsa-authorized-keys /home/concourse/authorized_worker_keys \
+               --tsa-host-key /home/concourse/host_key \
+               --tsa-log-level debug
+
+        User=concourse
+        Group=concourse
+
+        Type=simple
+
+        [Install]
+        WantedBy=default.target
+EOF
+
+cat >concourse_worker.service <<-EOF
+        [Unit]
+        Description=Concourse CI Worker
+        After=concourse_web.service
+
+        [Service]
+        ExecStart=/usr/local/concourse/bin/concourse worker \
+               --work-dir /opt/concourse/worker \
+               --tsa-host localhost:2222 \
+               --tsa-public-key /home/concourse/host_key.pub \
+               --tsa-worker-private-key /home/concourse/worker_key
+
+        User=root
+        Group=root
+
+        Type=simple
+
+        [Install]
+        WantedBy=default.target
+EOF
+
+mv concourse_web.service /etc/systemd/system/
+systemctl enable concourse_web.service
+systemctl start concourse_web.service
+
+mv concourse_worker.service /etc/systemd/system/
+systemctl enable concourse_worker.service
+systemctl start concourse_worker.service
