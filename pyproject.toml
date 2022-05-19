@@ -6,7 +6,6 @@ authors = ["RT <d3vadv3ntur3s@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-chalice = "^1.27.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3.0"

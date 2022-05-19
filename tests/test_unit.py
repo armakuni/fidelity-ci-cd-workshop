@@ -1,8 +1,17 @@
-import app
-from chalice.test import Client
+import pytest
+from app.handler import handler
 
-def test_index():
-    with Client(app.app) as client:
-        response = client.http.get('/')
-        assert response.status_code == 200
-        assert response.json_body == {'hello': 'dlrow'}
+@pytest.fixture
+def lambda_payload():
+    return {
+        "queryStringParameters": {
+            "height": 150,
+            "weight": 100
+        }
+    }
+
+def test_bmi(lambda_payload):
+    actual = handler(lambda_payload, None)
+    expected = "Your BMI is 44.4"
+
+    assert expected == actual
