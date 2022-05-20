@@ -1,5 +1,5 @@
 data "aws_route53_zone" "ak_training" {
-  name = "armakuni.co.uk."
+  name = "training.armakuni.co.uk."
 }
 
 data "aws_ami" "amazon-2" {
