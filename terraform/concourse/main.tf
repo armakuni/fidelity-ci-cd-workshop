@@ -1,5 +1,5 @@
 locals {
-  concourse_hostanme_prefix = "concourse"
+  concourse_hostanme_prefix = "fil-workshop-cci"
   concourse_hostname        = "${local.concourse_hostanme_prefix}.${data.aws_route53_zone.ak_training.name}"
 }
 # VPC
@@ -22,6 +22,14 @@ resource "aws_subnet" "cci" {
   }
 }
 
+resource "aws_internet_gateway" "cci" {
+  vpc_id = aws_vpc.cci.id
+
+  tags = {
+    Name = "concourse-igw"
+  }
+}
+
 # Security Group
 resource "aws_security_group" "concourse" {
   name        = "${var.prefix}-concourse"
@@ -35,7 +43,7 @@ resource "aws_security_group_rule" "concourse_egress" {
   from_port         = 0
   to_port           = 0
   protocol          = "all"
-  cidr_blocks       = ["10.0.0.0/24"]
+  cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.concourse.id
 }
 
@@ -45,7 +53,7 @@ resource "aws_security_group_rule" "concourse_https_ingress" {
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
-  cidr_blocks       = ["10.0.0.0/24"]
+  cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.concourse.id
 }
 
@@ -77,16 +85,13 @@ resource "aws_iam_instance_profile" "concourse_profile" {
   role = aws_iam_role.concourse.id
 }
 
-resource "aws_iam_policy_attachment" "admin_access" {
-  name = "${var.prefix}-concourse-ec2"
-  roles = [
-    aws_iam_role.concourse.id
-  ]
+resource "aws_iam_role_policy_attachment" "admin_access" {
+  role       = aws_iam_role.concourse.name
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
 
 resource "aws_instance" "concourse" {
-  ami                         = ""
+  ami                         = data.aws_ami.amazon-2.id
   instance_type               = "t3.medium"
   subnet_id                   = aws_subnet.cci.id
   vpc_security_group_ids      = [aws_security_group.concourse.id]
@@ -116,6 +121,9 @@ resource "aws_instance" "concourse" {
 resource "aws_eip_association" "eip_assoc" {
   instance_id   = aws_instance.concourse.id
   allocation_id = aws_eip.concourse.id
+  depends_on = [
+    aws_internet_gateway.cci
+  ]
 }
 
 resource "aws_eip" "concourse" {
