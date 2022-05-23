@@ -7,8 +7,8 @@ output "concourse_ip" {
 }
 
 output "concourse_password" {
-  value     = random_password.concourse_password.result
-  sensitive = true
+  value     = nonsensitive(random_password.concourse_password.result)
+  sensitive = false
 }
 
 output "concourse_host_private_key" {

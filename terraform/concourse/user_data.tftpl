@@ -8,14 +8,14 @@ TLS_KEY="${tls_key}"
 
 yum update -y
 
-wget https://download.postgresql.org/pub/repos/yum/14/redhat/rhel-7.12-x86_64/postgresql14-libs-14.2-1PGDG.rhel7.x86_64.rpm -o /root/postgresql14-libs-14.2-1PGDG.rhel7.x86_64.rpm
-wget https://download.postgresql.org/pub/repos/yum/14/redhat/rhel-7.12-x86_64/postgresql14-14.2-1PGDG.rhel7.x86_64.rpm -o /root/postgresql14-14.2-1PGDG.rhel7.x86_64.rpm
-wget https://download.postgresql.org/pub/repos/yum/14/redhat/rhel-7.12-x86_64/postgresql14-server-14.2-1PGDG.rhel7.x86_64.rpm -o /root/postgresql14-server-14.2-1PGDG.rhel7.x86_64.rpm
-wget https://github.com/concourse/concourse/releases/download/v7.7.1/concourse-7.7.1-linux-amd64.tgz -o /root/concourse-7.7.1-linux-amd64.tgz
+wget https://download.postgresql.org/pub/repos/yum/14/redhat/rhel-7.12-x86_64/postgresql14-libs-14.2-1PGDG.rhel7.x86_64.rpm -O /tmp/postgresql14-libs-14.2-1PGDG.rhel7.x86_64.rpm
+wget https://download.postgresql.org/pub/repos/yum/14/redhat/rhel-7.12-x86_64/postgresql14-14.2-1PGDG.rhel7.x86_64.rpm -O /tmp/postgresql14-14.2-1PGDG.rhel7.x86_64.rpm
+wget https://download.postgresql.org/pub/repos/yum/14/redhat/rhel-7.12-x86_64/postgresql14-server-14.2-1PGDG.rhel7.x86_64.rpm -O /tmp/postgresql14-server-14.2-1PGDG.rhel7.x86_64.rpm
+wget https://github.com/concourse/concourse/releases/download/v7.7.1/concourse-7.7.1-linux-amd64.tgz -O /tmp/concourse-7.7.1-linux-amd64.tgz
 
-yum localinstall -y /root/postgresql14-libs-14.2-1PGDG.rhel7.x86_64.rpm
-yum localinstall -y /root/postgresql14-14.2-1PGDG.rhel7.x86_64.rpm
-yum localinstall -y /root/postgresql14-server-14.2-1PGDG.rhel7.x86_64.rpm
+yum localinstall -y /tmp/postgresql14-libs-14.2-1PGDG.rhel7.x86_64.rpm
+yum localinstall -y /tmp/postgresql14-14.2-1PGDG.rhel7.x86_64.rpm
+yum localinstall -y /tmp/postgresql14-server-14.2-1PGDG.rhel7.x86_64.rpm
 
 postgresql-14-setup initdb
 systemctl start postgresql-14
@@ -24,7 +24,7 @@ systemctl enable postgresql-14
 su postgres -c "createuser concourse"
 su postgres -c "createdb --owner=concourse atc"
 
-tar -zxf /root/concourse*.tgz -C /usr/local
+tar -zxf /tmp/concourse*.tgz -C /usr/local
 
 groupadd -f concourse
 adduser --system -g concourse concourse || true
@@ -37,8 +37,8 @@ cp /home/concourse/worker_key.pub /home/concourse/authorized_worker_keys
 
 
 # TODO: Add tls cert and key
-# echo "$TLS_CERT" > /home/concourse/tls.crt
-# echo "$TLS_KEY" > /home/concourse/tls.key
+echo "$TLS_CERT" > /home/concourse/tls.crt
+echo "$TLS_KEY" > /home/concourse/tls.key
 openssl req -newkey rsa:2048 -passout pass:somepassword -subj "/C=GB/ST=London/L=London/O=AK/OU=AKCCI/CN=$${EXTERNAL_URL_HOST_NAME}/emailAddress=run-concourse@armakuni.com" -nodes -keyout /home/concourse/tls.key -x509 -days 365 -out /home/concourse/tls.crt
 
 ls /home/concourse/ | awk '{ print "chgrp concourse /home/concourse/"$1 }' | sh

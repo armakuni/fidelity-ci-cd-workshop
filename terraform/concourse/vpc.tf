@@ -86,7 +86,7 @@ EOF
   }
 }
 
-resource "aws_route" "r" {
+resource "aws_route" "concourse_udr" {
   route_table_id         = aws_vpc.cci.default_route_table_id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.cci.id

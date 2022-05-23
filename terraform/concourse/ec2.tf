@@ -48,11 +48,3 @@ resource "aws_eip_association" "eip_assoc" {
 resource "aws_eip" "concourse" {
   vpc = true
 }
-
-resource "aws_route53_record" "concourse_dns_record" {
-  name    = local.concourse_hostanme_prefix
-  zone_id = data.aws_route53_zone.ak_training.id
-  ttl     = "5"
-  type    = "A"
-  records = [aws_eip.concourse.public_ip]
-}
