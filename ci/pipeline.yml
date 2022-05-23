@@ -3,27 +3,32 @@ resources:
   type: git
   source:
     uri: https://github.com/armakuni/fidelity-concourse-demo
+    username: lengland
+    password: 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
+
+- name: tf-image
+  type: registry-image
+  source:
+    repository: hashicorp/terraform
 
 jobs:
-- name: test
-  plan:
-  - get: repo
-    trigger: true
-  - task: unit-test
-    config:
-      platform: linux
-      image_resource:
-      - name: alpine
-        tag: latest
-      inputs:
-      - name: repo
-      run:
-        path: poetry run pytest
-        dir: repo
-
 - name: deploy
   plan:
+  - get: tf-image
   - get: repo
     trigger: true
-    depends_on:
-    - test
+  - task: deploy
+    image: tf-image
+    config:
+      platform: linux
+      inputs:
+        - name: repo
+      run: 
+        path: /bin/sh
+        dir: repo/terraform/lambda
+        args: 
+          - -ec
+          - |
+            terraform init
+            terraform apply -auto-approve
+        
