@@ -1,6 +1,7 @@
 resources: 
 - name: repo
   type: git
+  icon: github
   source:
     uri: https://github.com/armakuni/fidelity-concourse-demo
     username: lengland
@@ -8,6 +9,7 @@ resources:
 
 - name: tf-image
   type: registry-image
+  icon: terraform
   source:
     repository: hashicorp/terraform
 
