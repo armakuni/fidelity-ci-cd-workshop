@@ -1,5 +1,5 @@
 
-INPUT_EXAMPLE = "Example: &height=X&weight=Y"
+INPUT_EXAMPLE = "Example: ?height=X&weight=Y"
 
 def handler(event, context):
     if 'queryStringParameters' not in event:

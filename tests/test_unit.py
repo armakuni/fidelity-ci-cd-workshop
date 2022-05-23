@@ -28,19 +28,19 @@ def lambda_full_payload():
 
 def test_default_page():
     actual = handler({}, None)
-    expected = "Please append your height and weight to the URL\nExample: &height=X&weight=Y"
+    expected = "Please append your height and weight to the URL\nExample: ?height=X&weight=Y"
 
     assert expected == actual
 
 def test_missing_height(lambda_weight_only_payload):
     actual = handler(lambda_weight_only_payload, None)
-    expected = "Please append the height parameter to the URL\nExample: &height=X&weight=Y"
+    expected = "Please append the height parameter to the URL\nExample: ?height=X&weight=Y"
 
     assert expected == actual
 
 def test_missing_weight(lambda_height_only_payload):
     actual = handler(lambda_height_only_payload, None)
-    expected = "Please append the weight parameter to the URL\nExample: &height=X&weight=Y"
+    expected = "Please append the weight parameter to the URL\nExample: ?height=X&weight=Y"
 
     assert expected == actual
 
