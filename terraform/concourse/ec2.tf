@@ -1,7 +1,7 @@
 resource "aws_instance" "concourse" {
   ami                         = data.aws_ami.amazon-2.id
   instance_type               = "t3.medium"
-  subnet_id                   = aws_subnet.cci.id
+  subnet_id                   = aws_subnet.cci[0].id
   vpc_security_group_ids      = [aws_security_group.concourse.id]
   iam_instance_profile        = aws_iam_instance_profile.concourse_profile.id
   user_data_replace_on_change = true
@@ -11,9 +11,6 @@ resource "aws_instance" "concourse" {
     external_host_name = local.concourse_hostname
     admin_username     = var.concourse_username
     admin_password     = random_password.concourse_password.result
-    # TODO: add proper cert:
-    tls_cert = "foo"
-    tls_key  = "bar"
   })
 
   metadata_options {

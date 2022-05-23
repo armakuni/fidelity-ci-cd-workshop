@@ -3,8 +3,6 @@
 EXTERNAL_URL_HOST_NAME="${external_host_name}"
 ADMIN_USERNAME="${admin_username}"
 ADMIN_PASSWORD="${admin_password}"
-TLS_CERT="${tls_cert}"
-TLS_KEY="${tls_key}"
 
 yum update -y
 
@@ -35,10 +33,6 @@ ssh-keygen -t rsa -b 4096 -m PEM -f /home/concourse/session_signing_key -N ''
 ssh-keygen -t rsa -b 4096 -m PEM -f /home/concourse/worker_key -N ''
 cp /home/concourse/worker_key.pub /home/concourse/authorized_worker_keys
 
-
-# TODO: Add tls cert and key
-echo "$TLS_CERT" > /home/concourse/tls.crt
-echo "$TLS_KEY" > /home/concourse/tls.key
 openssl req -newkey rsa:2048 -passout pass:somepassword -subj "/C=GB/ST=London/L=London/O=AK/OU=AKCCI/CN=$${EXTERNAL_URL_HOST_NAME}/emailAddress=run-concourse@armakuni.com" -nodes -keyout /home/concourse/tls.key -x509 -days 365 -out /home/concourse/tls.crt
 
 ls /home/concourse/ | awk '{ print "chgrp concourse /home/concourse/"$1 }' | sh

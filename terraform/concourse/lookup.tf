@@ -1,3 +1,7 @@
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 data "aws_route53_zone" "ak_training" {
   name = "training.armakuni.co.uk."
 }

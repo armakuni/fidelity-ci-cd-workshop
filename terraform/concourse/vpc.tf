@@ -10,11 +10,13 @@ resource "aws_vpc" "cci" {
 
 # Subnet
 resource "aws_subnet" "cci" {
-  vpc_id     = aws_vpc.cci.id
-  cidr_block = "10.0.0.0/28"
+  count             = 2
+  vpc_id            = aws_vpc.cci.id
+  cidr_block        = cidrsubnet(aws_vpc.cci.cidr_block, 2, count.index)
+  availability_zone = data.aws_availability_zones.available.names[count.index]
 
   tags = {
-    Name = "cci-workshop"
+    Name = "cci-workshop-${count.index}"
   }
 }
 
