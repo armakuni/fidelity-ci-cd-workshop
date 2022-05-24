@@ -1,7 +1,9 @@
 # CI/CD Workshop 
 
 ## Purpose 
-A quickstart to demonstrate how you can quickly configure a pipeline as code with Concourse CI to build, test, deploy.
+A quickstart to demonstrate how you can quickly configure a pipeline as code with Concourse CI to build, test and deploy.
+
+For the purposes of this demo, there is already a Concourse CI cluster setup for your usage, so this will not be part of the workshop. There are many ways to run Concourse, feel free to reach out with questions.
 
 ## Outcome
 - Why use Pipelines as code 
@@ -9,24 +11,10 @@ A quickstart to demonstrate how you can quickly configure a pipeline as code wit
 - Being comfortable to write your own concourse pipeline 
 
 ## Python App
-The workshop includes a basic Lambda Python app to demonstrate the lifecycle of code using CI/CD techniques. The app uses [poetry](https://python-poetry.org/docs/) as the python build tool.
+The workshop includes a basic Lambda Python app to demonstrate the lifecycle of code using CI/CD techniques. The app uses [poetry](https://python-poetry.org/docs/) as the python build tool, and [Terraform](https://www.terraform.io/) as the Infrastructure-as-Code deployment tool.
 
-### Setup
-```
-# setup Poetry
-curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
-
-# test installation
-poetry --version
-
-# install dependencies 
-poetry install
-```
-
-### Tests: 
-```bash
-poetry run pytest
-```
+## Prerequisites
+There are a few tools required for this workshop. They are defined in the [Getting Started](docs/1-getting-started.md) guide. Please install and verify all of these tools before continuing
 
 
 <br />
