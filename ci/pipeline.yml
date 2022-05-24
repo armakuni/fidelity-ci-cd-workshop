@@ -1,17 +1,4 @@
-resources: 
-- name: repo
-  type: git
-  icon: github
-  source:
-    uri: https://github.com/armakuni/fidelity-concourse-demo
-    username: lengland
-    password: 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
-
-- name: tf-image
-  type: registry-image
-  icon: terraform
-  source:
-    repository: hashicorp/terraform
+resources:
 
 jobs:
 - name: deploy
@@ -19,18 +6,4 @@ jobs:
   - get: tf-image
   - get: repo
     trigger: true
-  - task: deploy
-    image: tf-image
-    config:
-      platform: linux
-      inputs:
-        - name: repo
-      run: 
-        path: /bin/sh
-        dir: repo/terraform/lambda
-        args: 
-          - -ec
-          - |
-            terraform init
-            terraform apply -auto-approve
-        
+      

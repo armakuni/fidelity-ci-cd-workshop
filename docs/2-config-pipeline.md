@@ -83,10 +83,10 @@ The workshop app also includes unit tests that should be run to highlight any is
 ### Dependency
 ```yaml
 # The deployment stage should now depend on the unit tests passing
-# Add the following to the deployment task under 'plan'
+# Add the following to the deployment task as a property of the repo 'get'
 
-depends_on:
-- unit-test
+passed:
+- test
 ```
 
 ## Add linting to the pipeline
@@ -106,4 +106,12 @@ There are a few more commands in this task so we have moved the steps to an exte
     run:
       path: ci/tasks/lint/task.sh
       dir: repo
+```
+
+### Dependency
+```yaml
+# The deploy stage can now depend on both testing and linting to be passing, update to add the lint stage
+passed:
+- test
+- lint
 ```
