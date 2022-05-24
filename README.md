@@ -1,4 +1,4 @@
-# Concourse CI/CD Workshop 
+# CI/CD Workshop 
 
 ## Purpose 
 A quickstart to demonstrate how you can quickly configure a pipeline as code with Concourse CI to build, test, deploy.
@@ -9,26 +9,24 @@ A quickstart to demonstrate how you can quickly configure a pipeline as code wit
 - Being comfortable to write your own concourse pipeline 
 
 ## Python App
-Basic [AWS Chalice app](https://aws.github.io/chalice/) used to facilitate app build, deploy, and tear down. The app uses [poetry](https://python-poetry.org/docs/) as the python build tool.
+The workshop includes a basic Lambda Python app to demonstrate the lifecycle of code using CI/CD techniques. The app uses [poetry](https://python-poetry.org/docs/) as the python build tool.
 
-- install poetry:
+### Setup
 ```
-# setup poetry
+# setup Poetry
 curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
 
 # test installation
 poetry --version
-```
-- initialise repo with poetry 
-```
-# setup this repo
-poetry init
 
 # install dependencies 
 poetry install
 ```
-- Run locally: `poetry run chalice local`
-- Tests: `try run pytest`
+
+### Tests: 
+```bash
+poetry run pytest
+```
 
 
 <br />

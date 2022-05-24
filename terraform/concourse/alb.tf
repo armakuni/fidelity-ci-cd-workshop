@@ -1,3 +1,15 @@
+resource "aws_route53_record" "concourse_dns_record" {
+  name    = local.concourse_hostanme_prefix
+  zone_id = data.aws_route53_zone.ak_training.id
+  type    = "A"
+
+  alias {
+    name                   = aws_lb.concourse.dns_name
+    zone_id                = aws_lb.concourse.zone_id
+    evaluate_target_health = true
+  }
+}
+
 resource "aws_lb" "concourse" {
   name               = "concourse-workshop-alb"
   internal           = false

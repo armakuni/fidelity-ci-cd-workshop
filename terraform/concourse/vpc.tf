@@ -8,7 +8,7 @@ resource "aws_vpc" "cci" {
   }
 }
 
-# Subnet
+# Subnets
 resource "aws_subnet" "cci" {
   count             = 2
   vpc_id            = aws_vpc.cci.id
@@ -20,6 +20,7 @@ resource "aws_subnet" "cci" {
   }
 }
 
+# Internet gateway for external access
 resource "aws_internet_gateway" "cci" {
   vpc_id = aws_vpc.cci.id
 
