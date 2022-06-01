@@ -47,16 +47,26 @@ The first goal of the workshop is to deploy the Python app to AWS. This is achie
 ```
 *The resources defined above are referenced on lines 2 and 6*
 
-## Create concourse pipeline
+### Create concourse pipeline
 With the correct YAML in place, Concourse needs to be updated to run the correct tasks
 ```bash
 fly -t ak-concourse set-pipeline -p ci-workshop -c ci/pipeline.yml
 ```
 *This needs to be run after each change to the pipeline YAML*
 
+### Unpause the pipeline
+The first time a pipeline is created in Concourse, it is in the Paused state. Run the following to unpause it and see it run
+```bash
+fly -t ak-concourse unpause-pipeline -p ci-workshop
+```
+
+![Deploy Stage of Pipeline](./img/linear_deploy.png)
+
+### Check the result
+Once the pipeline has run, find the URL of the function from the Terraform output from the `deploy` task
 
 ## Add unit tests
-The workshop app also includes unit tests that should be run to highlight any issues. These should be added before looking at the code to make sure they react correctly.
+The workshop app also includes unit tests that should be run to highlight any issues. These should be added to the pipeline so we can be sure they are running consistently.
 
 ### Resource
 ```yaml
@@ -70,7 +80,7 @@ The workshop app also includes unit tests that should be run to highlight any is
 
 ### Task
 ```yaml
-# Task for executing tests with Pytest
+# Task for executing tests with Pytest. Should be a separate job
 - task: unit-test
   image: poetry-image
   config:
@@ -87,14 +97,18 @@ The workshop app also includes unit tests that should be run to highlight any is
         poetry run pytest
 ```
 
+![Test Stage in Pipeline](./img/fan_out_test_deploy.png)
+
 ### Dependency
+The pipeline has all the stages, but will deploy at the same time as the tests are running meaning that bad code could still get to production. We should make the deployment depend on successful tests
 ```yaml
-# The deployment stage should now depend on the unit tests passing
 # Add the following to the deployment task as a property of the repo 'get'
 
 passed:
 - test
 ```
+
+![Deploy Stage depends on Test Stage](./img/linear_test_deploy.png)
 
 ## Add linting to the pipeline
 We can get the pipeline to also verify that the code quality is consistent using Black and iSort. We are looking for the pipeline to fail if the code is not up to Python standards.
@@ -115,10 +129,25 @@ There are a few more commands in this task so we have moved the steps to an exte
       dir: repo
 ```
 
+![Lint Stage has no effect on Deployment](./img/fan_out_test_lint_deploy.png)
+
 ### Dependency
+Now we have a few stages, we can figure out the best pipeline design for our situation. 
+1. The pipeline could be completely linear where the tests depend on the linting passing, and the deployment depends on the tests passing.
+```yaml
+# The test stage can now depend on linting to be passing, update to add the lint stage
+passed:
+- lint
+```
+
+![Linting and Testing Stages in serial](./img/linear_test_lint_deploy.png)
+
+1. The pipeline could parallelise the linting and the testing and have the deployment depend on them both
 ```yaml
 # The deploy stage can now depend on both testing and linting to be passing, update to add the lint stage
 passed:
 - test
 - lint
 ```
+
+![Linting and Testing Stages in parallel](./img/fan_out_test_lint_fan_in_deploy.png)

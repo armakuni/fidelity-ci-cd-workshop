@@ -43,7 +43,7 @@ curl 'https://<CONCOURSE_URL>/api/v1/cli?arch=amd64&platform=darwin' -o fly \
     && chmod +x ./fly && mv ./fly /usr/local/bin/
 ```
 
-## Login 
+# Login 
 Set Fly up by logging in to the Concourse cluster
 
 ```sh
