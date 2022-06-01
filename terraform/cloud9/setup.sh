@@ -4,7 +4,7 @@ PYTHON_VERSION=3.9.12
 TERRAFORM_VERSION=1.2.1
 CONCOURSE_URL="fil-workshop-cci.training.armakuni.co.uk"
 
-echo 'export PATH="$PATH:$HOME/.rvm/bin"' >> ~/.bashrc
+echo 'export PATH="$PATH:/usr/local/bin"' >> ~/.bashrc
 source  ~/.bashrc
 
 # Install Python
@@ -16,13 +16,11 @@ cd /tmp/Python-${PYTHON_VERSION}
 sudo ./configure > /dev/null
 sudo make altinstall  2&> /dev/null
 echo "Done"
-echo ""
 
 # Install Poetry
 echo -n "Installing Poetry ... "
 curl -sSL https://install.python-poetry.org | python3.9 > /dev/null
 echo "Done"
-echo ""
 
 # Install Terraform
 echo -n "Installing Terraform v${TERRAFORM_VERSION} ... "
