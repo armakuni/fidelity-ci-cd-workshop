@@ -22,6 +22,13 @@ echo -n "Installing Poetry ... "
 curl -sSL https://install.python-poetry.org | python3.9 > /dev/null
 echo "Done"
 
+# Install Poetry dependencies
+echo -n "Installing Python packages ... "
+pushd ~/environment/fidelity-ci-cd-workshop
+poetry install -q -n > /dev/null
+popd
+echo "Done"
+
 # Install Terraform
 echo -n "Installing Terraform v${TERRAFORM_VERSION} ... "
 wget -q https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -O /tmp/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
