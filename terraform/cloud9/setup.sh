@@ -24,9 +24,9 @@ echo "Done"
 
 # Install Poetry dependencies
 echo -n "Installing Python packages ... "
-pushd ~/environment/fidelity-ci-cd-workshop
+pushd ~/environment/fidelity-ci-cd-workshop > /dev/null
 poetry install -q -n > /dev/null
-popd
+popd > /dev/null
 echo "Done"
 
 # Install Terraform
