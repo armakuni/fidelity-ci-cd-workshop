@@ -4,9 +4,6 @@
 The first goal of the workshop is to deploy the Python app to AWS. This is achieved with Terraform. 
 
 ### Resources
-
-**This resource currently required authentication, please generate a [GitHub Access Token](https://github.com/settings/tokens)**
-
 ```yaml
 # Resource for polling the GitHub repository for changes
 - name: repo
@@ -14,8 +11,6 @@ The first goal of the workshop is to deploy the Python app to AWS. This is achie
   icon: github
   source:
     uri: https://github.com/armakuni/fidelity-concourse-demo
-    username: <GitHub Username>
-    password: <GitHub Access Token>
 ```
 
 ```yaml
