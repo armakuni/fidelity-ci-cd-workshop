@@ -47,6 +47,13 @@ The first goal of the workshop is to deploy the Python app to AWS. This is achie
 ```
 *The resources defined above are referenced on lines 2 and 6*
 
+## Create concourse pipeline
+With the correct YAML in place, Concourse needs to be updated to run the correct tasks
+```bash
+fly -t ak-concourse set-pipeline -p ci-workshop -c ci/pipeline.yml
+```
+*This needs to be run after each change to the pipeline YAML*
+
 
 ## Add unit tests
 The workshop app also includes unit tests that should be run to highlight any issues. These should be added before looking at the code to make sure they react correctly.
