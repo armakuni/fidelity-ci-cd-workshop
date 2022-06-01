@@ -10,7 +10,11 @@ def handler(event, context):
     if 'weight' not in query_dict:
         return f"Please append the weight parameter to the URL\n{INPUT_EXAMPLE}"
     
+    # Weight in KG
     weight = int(query_dict["weight"])
+    # Height in CM
     height = int(query_dict["height"])
+    # BMI = kg/m^2
+    ## height should be divided by 100 to make m^2, then squared
     bmi = weight / ((height) ** 2)
     return f"Your BMI is {bmi:.1f}"
