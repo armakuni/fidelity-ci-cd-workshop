@@ -33,7 +33,7 @@ echo "Done"
 
 # Install Fly CLI
 echo -n "Installing Fly ... "
-curl -s "https://${CONCOURSE_URL}/api/v1/cli?arch=$(arch)&platform=linux" -o fly
-chmod +x fly
-sudo mv fly /usr/local/bin/
+curl -s "https://${CONCOURSE_URL}/api/v1/cli?arch=$(arch)&platform=linux" -o /tmp/fly
+chmod +x /tmp/fly
+sudo mv /tmp/fly /usr/local/bin/
 echo "Done"
