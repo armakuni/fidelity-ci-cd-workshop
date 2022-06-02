@@ -1,3 +1,8 @@
 language = "python3"
 entrypoint = "./repl.it/README.md"
-onBoot = ["source","./repl.it/setup.sh"]
+onBoot = ["/home/runner/${REPL_SLUG}/repl.it/setup.sh"]
+
+[env]
+PATH = "/home/runner/bin"
+CONCOURSE_URL = "fil-workshop-cci.training.armakuni.co.uk"
+CONCOURSE_USERNAME = "concourse"
