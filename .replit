@@ -1,3 +1,3 @@
 language = "python3"
-run = ""
+
 onBoot = "source repl.it/setup.sh"
