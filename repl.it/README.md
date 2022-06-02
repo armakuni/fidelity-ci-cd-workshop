@@ -4,9 +4,9 @@
 * Go to https://repl.it and sign up for a new account
 
 ## Open repo
-* Create a new repl
-* On the floating window, select "Import from github" on top right
-* In the repo name enter `armakuni/fidelity-ci-cd-workhop`
+* Create a new repl using the "Create" button in sidebar or the "+" button on the top-right of the screen
+* On the new repl dialog, click the "Import from github" button on top-right
+* In the Github URL enter `armakuni/fidelity-ci-cd-workhop`
 * Click "+ Import from Github" button
 
 ## Install tools
