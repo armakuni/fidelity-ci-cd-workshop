@@ -12,3 +12,13 @@
 ## Install tools
 * Go to shell
 * Run `source ./repl.it/setup.sh`
+
+# Login
+Set Fly up by logging in to the Concourse cluster
+
+```sh
+fly login --target ak-concourse --concourse-url <CONCOURSE_URL>
+```
+
+# Next steps
+Now all of that is set up, head over to the [Config Pipeline](../docs/2-config-pipeline.md) page to get started
