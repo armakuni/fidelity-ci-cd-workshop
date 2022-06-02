@@ -18,7 +18,8 @@ echo "Done"
 CONCOURSE_URL=${CONCOURSE_URL:-fil-workshop-cci.training.armakuni.co.uk}
 # Install Fly CLI
 echo -n "Installing Fly ... "
-curl -s "https://${CONCOURSE_URL}/api/v1/cli?arch=$(arch)&platform=linux" -o /tmp/fly
+curl -s "https://${CONCOURSE_URL}/api/v1/cli?arch=amd64&platform=linux" -o /tmp/fly
+
 chmod +x /tmp/fly
 mv /tmp/fly $HOME/bin/
 echo "Done"
