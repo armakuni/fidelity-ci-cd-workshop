@@ -17,6 +17,7 @@
 Set Fly up by logging in to the Concourse cluster
 
 ```sh
+export CONCOURSE_PASSWORD=<ask-ak>
 fly login --target ak-concourse --concourse-url https://${CONCOURSE_URL} --username ${CONCOURSE_USERNAME} --password ${CONCOURSE_PASSWORD}
 ```
 
