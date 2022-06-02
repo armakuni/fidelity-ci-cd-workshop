@@ -13,13 +13,15 @@
 * Go to shell
 * Run `source ./repl.it/setup.sh`
 
-# Login
+## Add secrets
+* On the left hand menu click on the 🔒 icon and add a new secret called CONCOURSE_PASSWORD and ask an AKer for the password value.
+
+## Login
 Set Fly up by logging in to the Concourse cluster
 
 ```sh
-export CONCOURSE_PASSWORD=<ask-ak>
 fly login --target ak-concourse --concourse-url https://${CONCOURSE_URL} --username ${CONCOURSE_USERNAME} --password ${CONCOURSE_PASSWORD}
 ```
 
-# Next steps
+## Next steps
 Now all of that is set up, head over to the [Config Pipeline](../docs/2-config-pipeline.md) page to get started
