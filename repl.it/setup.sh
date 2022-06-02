@@ -2,11 +2,6 @@
 
 mkdir -p $HOME/bin
 
-# Install Poetry
-echo -n "Installing Poetry ... "
-curl -sSL https://install.python-poetry.org | python3.8 > /dev/null
-echo "Done"
-
 # Install Poetry dependencies
 echo -n "Installing Python packages ... "
 poetry install -q -n > /dev/null
