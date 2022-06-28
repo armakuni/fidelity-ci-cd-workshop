@@ -25,3 +25,6 @@ mv /tmp/fly $HOME/bin/
 echo "Done"
 
 export PATH=$PATH:$HOME/bin
+
+git checkout -b $REPL_OWNER
+git push -u origin $REPL_OWNER
