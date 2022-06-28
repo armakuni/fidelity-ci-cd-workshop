@@ -31,10 +31,10 @@ The first goal of the workshop is to deploy the Python app to AWS. This is achie
     platform: linux
     inputs:
     - name: repo
-    run: 
+    run:
       path: /bin/sh
       dir: repo/terraform/lambda
-      args: 
+      args:
       - -ec
       - |
         terraform init
@@ -45,14 +45,21 @@ The first goal of the workshop is to deploy the Python app to AWS. This is achie
 ### Create concourse pipeline
 With the correct YAML in place, Concourse needs to be updated to run the correct tasks
 ```bash
-fly -t ak-concourse set-pipeline -p ci-workshop -c ci/pipeline.yml
+fly -t ak-concourse set-pipeline -p ci-workshop-$REPL_OWNER -c ci/pipeline.yml
 ```
 *This needs to be run after each change to the pipeline YAML*
+
+### Expose the pipeline
+To see the pipeline in the Concourse UI without logging in, it can be made publicly accessble.
+```bash
+fly -t ak-concourse expose-pipeline -p ci-workshop-$REPL_OWNER
+```
+> **This is not normally done, but as Concourse is outside of the FIL network, this is done to avoid auth issues**
 
 ### Unpause the pipeline
 The first time a pipeline is created in Concourse, it is in the Paused state. Run the following to unpause it and see it run
 ```bash
-fly -t ak-concourse unpause-pipeline -p ci-workshop
+fly -t ak-concourse unpause-pipeline -p ci-workshop-$REPL_OWNER
 ```
 
 ![Deploy Stage of Pipeline](./img/linear_deploy.png)
