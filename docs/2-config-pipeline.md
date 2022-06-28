@@ -1,7 +1,8 @@
 # Config Pipeline
 
 ## Deploy to production
-The first goal of the workshop is to deploy the Python app to AWS. This is achieved with Terraform. 
+The first goal of the workshop is to deploy the Python app to AWS, which is achieved using Terraform.
+Add the following sections to the templated pipeline file, `ci/pipeline.yml`
 
 ### Resources
 ```yaml
@@ -13,6 +14,7 @@ The first goal of the workshop is to deploy the Python app to AWS. This is achie
     uri: https://github.com/armakuni/fidelity-concourse-demo
     branch: ((branch))
 ```
+*The branch variable here will be substituted in the `set-pipeline` command later*
 
 ```yaml
 # Resource for a container with Terraform for running the deployment stages
@@ -39,14 +41,15 @@ The first goal of the workshop is to deploy the Python app to AWS. This is achie
       - -ec
       - |
         terraform init
+        terraform workspace select ((branch)) || terraform workspace new ((branch))
         terraform apply -auto-approve
 ```
-*The resources defined above are referenced on lines 2 and 6*
+*The resources defined above are referenced on lines 2 and 6 of this block*
 
 ### Create concourse pipeline
 With the correct YAML in place, Concourse needs to be updated to run the correct tasks
 ```bash
-fly -t ak-concourse set-pipeline -p ci-workshop-$REPL_OWNER -c ci/pipeline.yml -l branch.nam
+fly -t ak-concourse set-pipeline -p ci-workshop-$REPL_OWNER -c ci/pipeline.yml -l branch.name
 ```
 *This needs to be run after each change to the pipeline YAML*
 
