@@ -9,6 +9,12 @@
 * In the Github URL enter `armakuni/fidelity-ci-cd-workshop`
 * Click "+ Import from Github" button
 
+## Get a GitHub PAT
+Part of the workshop will see you pushing code to the GitHub repository, for this we need to authenticate
+your user with a Personal Access Token.
+Please head [to GitHub](https://github.com/settings/tokens/new) and create one with the `repo` scope.
+Copy it's value for use in the setup
+
 ## Install tools
 * Go to shell
 * Run `source ./repl.it/setup.sh`
