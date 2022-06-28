@@ -15,6 +15,6 @@ def handler(event, context):
     # Height in CM
     height = int(query_dict["height"])
     # BMI = kg/m^2
-    ## height should be divided by 100 to make m^2, then squared
+    ## height (given in cm) should be divided by 100 to convert to meters, then squared
     bmi = weight / ((height) ** 2)
     return f"Your BMI is {bmi:.1f}"
