@@ -11,6 +11,7 @@ The first goal of the workshop is to deploy the Python app to AWS. This is achie
   icon: github
   source:
     uri: https://github.com/armakuni/fidelity-concourse-demo
+    branch: ((branch))
 ```
 
 ```yaml
@@ -45,7 +46,7 @@ The first goal of the workshop is to deploy the Python app to AWS. This is achie
 ### Create concourse pipeline
 With the correct YAML in place, Concourse needs to be updated to run the correct tasks
 ```bash
-fly -t ak-concourse set-pipeline -p ci-workshop-$REPL_OWNER -c ci/pipeline.yml
+fly -t ak-concourse set-pipeline -p ci-workshop-$REPL_OWNER -c ci/pipeline.yml -l branch.nam
 ```
 *This needs to be run after each change to the pipeline YAML*
 
