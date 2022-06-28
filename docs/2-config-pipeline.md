@@ -34,6 +34,8 @@ Add the following sections to the templated pipeline file, `ci/pipeline.yml`
     platform: linux
     inputs:
     - name: repo
+    params:
+      TF_VAR_resource_prefix: ((branch))
     run:
       path: /bin/sh
       dir: repo/terraform/lambda
