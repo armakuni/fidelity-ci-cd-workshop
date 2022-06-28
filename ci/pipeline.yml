@@ -2,6 +2,7 @@ resources:
 
 jobs:
 - name: deploy
+  public: true
   plan:
   - get: tf-image
   - get: repo
