@@ -11,7 +11,7 @@ data "archive_file" "lambda_zip" {
 resource "aws_lambda_function" "workshop_lambda" {
   # If the file is not in the current working directory you will need to include a
   # path.module in the filename.
-  function_name = "workshop-lambda"
+  function_name = "${var.resource_prefix}-workshop-lambda"
   role          = aws_iam_role.iam_for_lambda.arn
 
   filename = data.archive_file.lambda_zip.output_path
@@ -32,7 +32,7 @@ resource "aws_lambda_function_url" "workshop_lambda" {
 
 
 resource "aws_iam_role" "iam_for_lambda" {
-  name = "iam-for-lambda"
+  name = "${var.resource_prefix}-iam-for-lambda"
 
   assume_role_policy = <<EOF
 {
